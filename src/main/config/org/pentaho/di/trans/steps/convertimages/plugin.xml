@@ -8,6 +8,6 @@
     classname="org.pentaho.di.trans.steps.convertimages.ConvertImagesMeta">
     <libraries>
         <library name="im4java-1.4.0.jar"/>
-        <library name="pentaho-convert-images-@@project.version@@.jar"/>
+        <library name="pentaho-convert-images-plugin-@@project.version@@.jar"/>
     </libraries>
 </plugin>
