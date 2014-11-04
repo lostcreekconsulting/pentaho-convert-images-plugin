@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    id="ConvertImages"
+    iconfile="photos.png"
+    description="Convert images"
+    tooltip="Converts images to different formats"
+    category="Transform"
+    classname="org.pentaho.di.trans.steps.convertimages.ConvertImagesMeta">
+    <libraries>
+        <library name="im4java-1.4.0.jar"/>
+        <library name="pentaho-convert-images-@@project.version@@.jar"/>
+    </libraries>
+</plugin>
