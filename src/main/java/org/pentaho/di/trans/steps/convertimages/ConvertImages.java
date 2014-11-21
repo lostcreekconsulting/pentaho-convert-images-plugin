@@ -1,5 +1,6 @@
 package org.pentaho.di.trans.steps.convertimages;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.pentaho.di.core.exception.KettleException;
@@ -48,12 +49,30 @@ public class ConvertImages extends BaseStep implements StepInterface {
         }
 
         try {
-            ConvertCmd convert = new ConvertCmd();
-            convert.setSearchPath(meta.getProgramPath());
-            IMOperation operation = new IMOperation();
-            operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicSourceFileNameField())]);
-            operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicTargetFileNameField())]);
-            convert.run(operation);
+            String source = (String) r[data.outputRowMeta.indexOfValue(meta.getDynamicSourceFileNameField())];
+            String target = (String) r[data.outputRowMeta.indexOfValue(meta.getDynamicTargetFileNameField())];
+            File sourceFile = new File(source);
+            File targetFile = new File(target);
+            File targetFolder = targetFile.getParentFile();
+
+            if (!targetFile.exists() || meta.isOverwriteTarget()) {
+                if (!targetFolder.exists() && meta.isCreateParentFolder()) {
+                    targetFolder.mkdir();
+                }
+
+                if (targetFolder.exists()) {
+                    ConvertCmd convert = new ConvertCmd();
+                    convert.setSearchPath(meta.getProgramPath());
+                    IMOperation operation = new IMOperation();
+                    operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicSourceFileNameField())]);
+                    operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicTargetFileNameField())]);
+                    convert.run(operation);
+                }
+            }
+
+            if (meta.isDeleteSource()) {
+                sourceFile.delete();
+            }
         } catch (IOException e) {
             throw new KettleException(e);
         } catch (InterruptedException e) {
