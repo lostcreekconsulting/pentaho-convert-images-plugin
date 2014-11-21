@@ -1,16 +1,8 @@
 package org.pentaho.di.trans.steps.convertimages;
 
 import java.io.IOException;
-import java.io.File;
-
-import magick.ImageInfo;
-import magick.MagickException;
-import magick.MagickImage;
 
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.row.RowDataUtil;
-import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStep;
@@ -18,6 +10,10 @@ import org.pentaho.di.trans.step.StepDataInterface;
 import org.pentaho.di.trans.step.StepInterface;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
+
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IMOperation;
+import org.im4java.core.IM4JavaException;
 
 public class ConvertImages extends BaseStep implements StepInterface {
     private static Class<?> PKG = ConvertImagesMeta.class;
@@ -47,14 +43,14 @@ public class ConvertImages extends BaseStep implements StepInterface {
 
         if (first) {
             first = false;
-            data.outputRowMeta = (RowMetaInterface) getInputRowMeta().clone();
+            data.outputRowMeta = getInputRowMeta().clone();
             meta.getFields(data.outputRowMeta, getStepname(), null, null, this);
         }
 
         try {
-            org.im4java.core.ConvertCmd convert = new org.im4java.core.ConvertCmd();
+            ConvertCmd convert = new ConvertCmd();
             convert.setSearchPath(meta.getProgramPath());
-            org.im4java.core.IMOperation operation = new org.im4java.core.IMOperation();
+            IMOperation operation = new IMOperation();
             operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicSourceFileNameField())]);
             operation.addImage((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicTargetFileNameField())]);
             convert.run(operation);
@@ -62,21 +58,10 @@ public class ConvertImages extends BaseStep implements StepInterface {
             throw new KettleException(e);
         } catch (InterruptedException e) {
             throw new KettleException(e);
-        } catch (org.im4java.core.IM4JavaException e) {
+        } catch (IM4JavaException e) {
             throw new KettleException(e);
         }
 
-//        try {
-//            String targetFileName = (String) r[data.outputRowMeta.indexOfValue(meta.getDynamicTargetFileNameField())];
-//            ImageInfo source = new ImageInfo((String) r[data.outputRowMeta.indexOfValue(meta.getDynamicSourceFileNameField())]);
-//            ImageInfo target = new ImageInfo(targetFileName);
-//            MagickImage converter = new MagickImage(source);
-//            converter.setFileName(targetFileName);
-//            converter.writeImage(target);
-//        } catch (MagickException e) {
-//            throw new KettleException(e);
-//        }
-        
         putRow(data.outputRowMeta, r);
 
         return true;
