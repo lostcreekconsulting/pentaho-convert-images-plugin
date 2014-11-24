@@ -37,6 +37,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
     private boolean overwriteTarget;
     private String sourceFileNameField;
     private String targetFileNameField;
+    private String errorMessageField;
 
     public ConvertImagesMeta() {
         super();
@@ -59,6 +60,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
         deleteSource = false;
         createParentFolder = false;
         overwriteTarget = false;
+        errorMessageField = "Error Message";
     }
 
     public String getProgramPath() {
@@ -83,6 +85,14 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
 
     public void setDynamicTargetFileNameField(String targetFileNameField) {
         this.targetFileNameField = targetFileNameField;
+    }
+
+    public String getErrorMessageField() {
+        return errorMessageField;
+    }
+
+    public void setErrorMessageField(String errorMessageField) {
+        this.errorMessageField = errorMessageField;
     }
 
     public boolean isDeleteSource() {
@@ -114,6 +124,12 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
     }
 
     public void getFields(RowMetaInterface r, String origin, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space) {
+        ValueMetaInterface v = new ValueMeta();
+        v.setName(errorMessageField);
+        v.setType(ValueMeta.TYPE_STRING);
+        v.setTrimType(ValueMeta.TRIM_TYPE_BOTH);
+        v.setOrigin(origin);
+        r.addValueMeta(v);
     }
 
     public String getXML() {
@@ -122,6 +138,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
         xml.append("    " + XMLHandler.addTagValue("programPath", programPath));
         xml.append("    " + XMLHandler.addTagValue("sourceFileNameField", sourceFileNameField));
         xml.append("    " + XMLHandler.addTagValue("targetFileNameField", targetFileNameField));
+        xml.append("    " + XMLHandler.addTagValue("errorMessageField", errorMessageField));
         xml.append("    " + XMLHandler.addTagValue("deleteSource", deleteSource));
         xml.append("    " + XMLHandler.addTagValue("createParentFolder", createParentFolder));
         xml.append("    " + XMLHandler.addTagValue("overwriteTarget", overwriteTarget));
@@ -134,6 +151,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
             programPath = XMLHandler.getTagValue(stepNode, "programPath");
             sourceFileNameField = XMLHandler.getTagValue(stepNode, "sourceFileNameField");
             targetFileNameField = XMLHandler.getTagValue(stepNode, "targetFileNameField");
+            errorMessageField = XMLHandler.getTagValue(stepNode, "errorMessageField");
             deleteSource = "Y".equalsIgnoreCase(XMLHandler.getTagValue(stepNode, "deleteSource"));
             createParentFolder = "Y".equalsIgnoreCase(XMLHandler.getTagValue(stepNode, "createParentFolder"));
             overwriteTarget = "Y".equalsIgnoreCase(XMLHandler.getTagValue(stepNode, "overwriteTarget"));
@@ -147,6 +165,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
             programPath = repo.getStepAttributeString(stepId, "programPath");
             sourceFileNameField = repo.getStepAttributeString(stepId, "sourceFileNameField");
             targetFileNameField = repo.getStepAttributeString(stepId, "targetFileNameField");
+            errorMessageField = repo.getStepAttributeString(stepId, "errorMessageField");
             deleteSource = repo.getStepAttributeBoolean(stepId, "deleteSource");
             createParentFolder = repo.getStepAttributeBoolean(stepId, "createParentFolder");
             overwriteTarget = repo.getStepAttributeBoolean(stepId, "overwriteTarget");
@@ -160,6 +179,7 @@ public class ConvertImagesMeta extends BaseStepMeta implements StepMetaInterface
             rep.saveStepAttribute(transformationId, stepId, "programPath", programPath);
             rep.saveStepAttribute(transformationId, stepId, "sourceFileNameField", sourceFileNameField);
             rep.saveStepAttribute(transformationId, stepId, "targetFileNameField", targetFileNameField);
+            rep.saveStepAttribute(transformationId, stepId, "errorMessageField", errorMessageField);
             rep.saveStepAttribute(transformationId, stepId, "deleteSource", deleteSource);
             rep.saveStepAttribute(transformationId, stepId, "createParentFolder", createParentFolder);
             rep.saveStepAttribute(transformationId, stepId, "overwriteTarget", overwriteTarget);

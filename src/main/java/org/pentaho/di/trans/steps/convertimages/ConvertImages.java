@@ -74,11 +74,11 @@ public class ConvertImages extends BaseStep implements StepInterface {
                 sourceFile.delete();
             }
         } catch (IOException e) {
-            throw new KettleException(e);
+            r[data.outputRowMeta.indexOfValue(meta.getErrorMessageField())] = e.getMessage();
         } catch (InterruptedException e) {
-            throw new KettleException(e);
+            r[data.outputRowMeta.indexOfValue(meta.getErrorMessageField())] = e.getMessage();
         } catch (IM4JavaException e) {
-            throw new KettleException(e);
+            r[data.outputRowMeta.indexOfValue(meta.getErrorMessageField())] = e.getMessage();
         }
 
         putRow(data.outputRowMeta, r);

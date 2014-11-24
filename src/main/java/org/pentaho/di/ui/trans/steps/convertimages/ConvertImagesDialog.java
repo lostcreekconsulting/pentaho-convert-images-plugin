@@ -66,6 +66,10 @@ public class ConvertImagesDialog extends BaseStepDialog implements StepDialogInt
     private CCombo wTargetFileNameField;
     private FormData fdlTargetFileNameField, fdTargetFileNameField;
 
+    private Label wlErrorMessageField;
+    private Text wErrorMessageField;
+    private FormData fdlErrorMessageField, fdErrorMessageField;
+
     public ConvertImagesDialog(Shell parent, Object in, TransMeta transMeta, String sname) {
         super(parent, (BaseStepMeta) in, transMeta, sname);
         meta = (ConvertImagesMeta) in;
@@ -271,12 +275,31 @@ public class ConvertImagesDialog extends BaseStepDialog implements StepDialogInt
             }
         });
 
+        wlErrorMessageField = new Label(shell, SWT.RIGHT);
+        wlErrorMessageField.setText(BaseMessages.getString(PKG, "ConvertImagesDialog.ErrorMessageField.Label"));
+        props.setLook(wlErrorMessageField);
+        fdlErrorMessageField = new FormData();
+        fdlErrorMessageField.left = new FormAttachment(0, 0);
+        fdlErrorMessageField.right = new FormAttachment(middle, -margin);
+        fdlErrorMessageField.top = new FormAttachment(wTargetFileNameField, margin);
+        wlErrorMessageField.setLayoutData(fdlErrorMessageField);
+
+        wErrorMessageField = new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+        props.setLook(wErrorMessageField);
+        wErrorMessageField.setEditable(true);
+        wErrorMessageField.addModifyListener(lsMod);
+        fdErrorMessageField = new FormData();
+        fdErrorMessageField.left = new FormAttachment(middle, 0);
+        fdErrorMessageField.top = new FormAttachment(wTargetFileNameField, 2 * margin);
+        fdErrorMessageField.right = new FormAttachment(100, -margin);
+        wErrorMessageField.setLayoutData(fdErrorMessageField);
+
         wOK = new Button(shell, SWT.PUSH);
         wOK.setText(BaseMessages.getString(PKG, "System.Button.OK"));
         wCancel = new Button(shell, SWT.PUSH);
         wCancel.setText(BaseMessages.getString(PKG, "System.Button.Cancel"));
 
-        BaseStepDialog.positionBottomButtons(shell, new Button[] { wOK, wCancel }, margin, wTargetFileNameField);
+        BaseStepDialog.positionBottomButtons(shell, new Button[] { wOK, wCancel }, margin, wErrorMessageField);
 
         lsCancel = new Listener() {
             public void handleEvent(Event e) { cancel(); }
@@ -329,6 +352,10 @@ public class ConvertImagesDialog extends BaseStepDialog implements StepDialogInt
             wTargetFileNameField.setText(meta.getDynamicTargetFileNameField());
         }
 
+        if (meta.getErrorMessageField() != null) {
+            wErrorMessageField.setText(meta.getErrorMessageField());
+        }
+
         wDeleteSource.setSelection(meta.isDeleteSource());
         wCreateParentFolder.setSelection(meta.isCreateParentFolder());
         wOverwriteTarget.setSelection(meta.isOverwriteTarget());
@@ -350,6 +377,7 @@ public class ConvertImagesDialog extends BaseStepDialog implements StepDialogInt
         meta.setProgramPath(wProgramPath.getText());
         meta.setDynamicSourceFileNameField(wSourceFileNameField.getText());
         meta.setDynamicTargetFileNameField(wTargetFileNameField.getText());
+        meta.setErrorMessageField(wErrorMessageField.getText());
         meta.setDeleteSource(wDeleteSource.getSelection());
         meta.setCreateParentFolder(wCreateParentFolder.getSelection());
         meta.setOverwriteTarget(wOverwriteTarget.getSelection());
