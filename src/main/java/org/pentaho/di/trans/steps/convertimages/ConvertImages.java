@@ -57,7 +57,7 @@ public class ConvertImages extends BaseStep implements StepInterface {
 
             if (!targetFile.exists() || meta.isOverwriteTarget()) {
                 if (!targetFolder.exists() && meta.isCreateParentFolder()) {
-                    targetFolder.mkdir();
+                    targetFolder.mkdirs();
                 }
 
                 if (targetFolder.exists()) {
